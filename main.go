@@ -9,10 +9,12 @@ import "github.com/chromedp/chromedp"
 import "log"
 
 const (
-	url = "http://orteil.dashnet.org/cookieclicker/"
+	//url = "http://orteil.dashnet.org/cookieclicker/"
+	url = "http://orteil.dashnet.org/cookieclicker/beta"
 )
 
 var (
+	clickBigCookie = chromedp.Click("#bigCookie")
 	closeNotificationIfPresent = chromedp.ActionFunc(func(cc context.Context, ee cdp.Executor) error {
 		closeButtons := []*cdp.Node{}
 		chromedp.Nodes("#notes div.close", &closeButtons).Do(cc, ee)
@@ -40,6 +42,7 @@ var (
 		}
 		return nil
 	})
+	individualTasks = []chromedp.Action{clickBigCookie, purchaseUpgradeIfAvailable, purchaseProductIfAvailable, closeNotificationIfPresent}
 )
 
 func main() {
@@ -55,14 +58,9 @@ func main() {
 		chromedp.Sleep(2 * time.Second),
 		chromedp.Click("a.cc_btn_accept_all"),
 	})
-	clickBigCookie := chromedp.Click("#bigCookie")
-	individualTasks := []chromedp.ActionFunc{purchaseUpgradeIfAvailable, purchaseProductIfAvailable, closeNotificationIfPresent}
 	for true {
-		c.Run(ctxt, chromedp.Tasks{
-			clickBigCookie,
-		})
 		for _, actionFunction := range individualTasks {
-			timeoutableContext, cancelFunc := context.WithTimeout(ctxt, 8*time.Millisecond)
+			timeoutableContext, cancelFunc := context.WithTimeout(ctxt, 5*time.Millisecond)
 			c.Run(timeoutableContext, chromedp.Tasks{
 				actionFunction,
 			})
