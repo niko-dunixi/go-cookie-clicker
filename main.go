@@ -60,8 +60,8 @@ func main() {
 	})
 	for true {
 		for _, actionFunction := range individualTasks {
-			timeoutableContext, cancelFunc := context.WithTimeout(ctxt, 5*time.Millisecond)
-			c.Run(timeoutableContext, chromedp.Tasks{
+			contextWithTimeout, cancelFunc := context.WithTimeout(ctxt, 5*time.Millisecond)
+			c.Run(contextWithTimeout, chromedp.Tasks{
 				actionFunction,
 			})
 			cancelFunc()
